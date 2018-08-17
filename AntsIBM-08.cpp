@@ -10,206 +10,12 @@
 
 using namespace std;
 
+// Read file with parameters
+
+# include "Parameters.cpp"
+
+
 // ASCII art from http://www.kammerl.de/ascii/AsciiSignature.php
-//////////////////////////////////////////////////////
-//////////////////////////////////////////////////////
-// _______       ___   .___________.    ___         //
-//|       \     /   \  |           |   /   \        //
-//|  .--.  |   /  ^  \ `---|  |----`  /  ^  \       //
-//|  |  |  |  /  /_\  \    |  |      /  /_\  \      //
-//|  '--'  | /  _____  \   |  |     /  _____  \     //
-//|_______/ /__/     \__\  |__|    /__/     \__\    //
-//////////////////////////////////////////////////////
-//////////////////////////////////////////////////////
-
-static string Method;
-
-static string BorderBehavior = "periodic";   //"periodic";         // "respawn" or "periodic"
-
-static double const numxx = 100.;
-static double const numyy = 100.;
-
-static int const NumberOfAnts = 1;
-
-static int const LARGE_NUMBER = 1000;    // NOT USED ANYMORE.
-
-static int const MaxActiveDropletsPerAnt = 10000;    // 1000
-
-static double const IgnoreDropletsFartherThan = 15.;
-
-static int const TestWithGivenTrail = 1;    // 1=true, 0=false
-
-static string GivenTrailType;
-
-///////////////////////////////////////////
-// Parameters for given pheromone trail  //
-///////////////////////////////////////////
-static double const PheroNarrow = .8*1.;
-static double const PheroHigh = 5.;
-///////////////////////////////////////////
-// End Parameters for given pheromone trail
-///////////////////////////////////////////
-
-
-//static double const Pi = 3.14159;
-static double const Pi =  3.1415926535;
-static double const Ln2 = 0.6931471806;
-
-// obtain a seed from the system clock:
-//unsigned seed1 = std::chrono::system_clock::now().time_since_epoch().count();
-unsigned seed1 = 3536131122;                   // To use same seed as another simulation.
-
-default_random_engine generator(seed1);
-normal_distribution<double> Normal(0.,1.);          // Normal(0.,1.)
-normal_distribution<double> SmallNormal(0.,.05);      // (0.,.05)
-uniform_real_distribution<double> Uniform(0.,2.*Pi);      // Uniformly distributed angle
-uniform_int_distribution<int> UniformInteger(0,10);      // Uniformly distributed integer   20
-//http://www.cplusplus.com/reference/random/normal_distribution/
-// Normal(mean,stddev)
-// Usage:
-// double number = Normal(generator);
-static double const Turn_off_random = 7.*0.;    //*0.02;
-//  ^^^ 0. = No Random!
-
-//	Parameter for Regularizing Function
-static double const RegularizingEpsilon = 0.01;
-
-
-//////////////////////////////////////////////////////
-// Ant parameters                                   //
-//////////////////////////////////////////////////////
-
-//  Time scale t_hat em segundos
-static double const t_hat_in_seconds = 1.;
-
-//  Space scale X_hat em centimetros
-static double const X_hat_in_cm = 1.;                  // 1.73;
-
-//  Relaxation time tau em segundos:
-static double const tau = .5;         //    0.5
-
-//  Nondimensional relaxation TAU = (t_hat / tau)^(-1).
-//  Deve ser o relaxation time nas unidades t_hat.
-//  Na equação deve aparecer 1/TAU.
-static double const TAU = tau / t_hat_in_seconds;         //
-
-//  Sensing area radius em centimetros
-static double const SensingAreaRadius = .8;         //  .4
-
-//  Sensing area radius em X_hat
-static double const SENSING_AREA_RADIUS = SensingAreaRadius / X_hat_in_cm;         //
-
-//////////////////////////////////////
-//  Sensing Area Half Angle         //
-//  .-. . . .-. .   .-.             //
-//  |-| |\| |.. |   |-              //
-//  ` ' ' ` `-' `-' `-'             //
-//////////////////////////////////////
-static double const SensingAreaHalfAngle = 1.*Pi/1.9;         //
-
-//  Natural Ant velocity in cm/s
-static double const NaturalVelocityIncmsec = 2.;         // 2.
-
-//  Natural Ant velocity in new units
-static double const NaturalVelocity = NaturalVelocityIncmsec * t_hat_in_seconds / X_hat_in_cm;         //
-
-// tempo final
-//static double const TFINAL = 0.1;
-static double const delta_t = 0.05;   //     0.05
-
-//  Pheromone Diffusion:
-static double const Diffusion = 0.002;      // .0002
-
-//  Pheromone Evaporation:
-static double const Evaporation = 0.01;        //0.01
-
-//  Droplet amounts
-static double const DropletAmountPerUnitTime = 0.*1.*1.;        //0.00001
-static double const DropletAmount = DropletAmountPerUnitTime * delta_t;        //0.00001
-
-//  This is pheromone detection threshold
-static double const Threshold = 0.7; //
-
-//	With Deltas, Lambda =
-static double const LambdaDeltas = NaturalVelocity/(SENSING_AREA_RADIUS*cos(SensingAreaHalfAngle));         //
-//  With Nonlocal, L =
-static double const LambdaNonlocal = (3./2.)*NaturalVelocity*SensingAreaHalfAngle/(SENSING_AREA_RADIUS*sin(SensingAreaHalfAngle));         //
-//  Deprecated, for linear method
-static double const Lambda = 1.;
-
-//////////////////////////////////////////////////////
-// End Ant parameters                               //
-//////////////////////////////////////////////////////
-
-
-
-string SensitivityMethod;
-
-////////////////////////////
-//  Definição do  Domínio
-////////////////////////////
-/////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////
-// _______   ______   .___  ___.      ___       __  .__   __.  //
-//|       \ /  __  \  |   \/   |     /   \     |  | |  \ |  |  //
-//|  .--.  |  |  |  | |  \  /  |    /  ^  \    |  | |   \|  |  //
-//|  |  |  |  |  |  | |  |\/|  |   /  /_\  \   |  | |  . `  |  //
-//|  '--'  |  `--'  | |  |  |  |  /  _____  \  |  | |  |\   |  //
-//|_______/ \______/  |__|  |__| /__/     \__\ |__| |__| \__|  //
-/////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////
-// extremo inferior do intervalo em x (cm)
-static double const x_1_cm = -30.;      //-25
-
-// extremo superior do intervalo em x (cm)
-static double const x_2_cm = 30.;       //25
-
-// extremo inferior do intervalo em y (cm)
-static double const y_1_cm =  -30.;     //-25
-
-// extremo superior do intervalo em y (cm)
-static double const y_2_cm = 30.;       //25
-
-// extremo inferior do intervalo em x
-static double const x_1 = x_1_cm / X_hat_in_cm;
-
-// extremo superior do intervalo em x
-static double const x_2 = x_2_cm / X_hat_in_cm;
-
-// extremo inferior do intervalo em y
-static double const y_1 = y_1_cm / X_hat_in_cm;
-
-// extremo superior do intervalo em y
-static double const y_2 = y_2_cm / X_hat_in_cm;
-
-////////////////////////////
-// End Definição do  Domínio
-////////////////////////////
-
-static double const delta_x = (x_2-x_1)/numxx;;
-static double const delta_y = (y_2-y_1)/numyy;;
-
-
-//////////////////////////////////////////////////////////
-// Nonlocal Sector Discretization parameters            //
-//////////////////////////////////////////////////////////
-static int const RNumber = 5;
-static int const ThetaNumber = 5;
-static double const DRSector = SENSING_AREA_RADIUS / (RNumber);
-static double const DThetaSector = 2.* SensingAreaHalfAngle / (ThetaNumber);
-//////////////////////////////////////////////////////////
-// End Nonlocal Sector Discretization parameters        //
-//////////////////////////////////////////////////////////
-
-
-
-///////////////////////////////////////////////
-//  Parametro Só para os plots não ficarem
-//  com um risco do lado ao outro
-//  quando muda de lado por periodicidade
-///////////////////////////////////////////////
-static int ChangedSide = 0;
-
 /////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////
 // _______  __    __  .__   __.   ______ .___________. __    ______   .__   __.      _______.
@@ -567,13 +373,20 @@ int main (void){
     for (int antnumber=0; antnumber < totalantnumber; antnumber++) {
         
         //  Random initial velocities
-        Pop[antnumber].AntVelX = 0.1*cos(Normal(generator));
-        Pop[antnumber].AntVelY = 0.1*sin(Normal(generator));
+//        Pop[antnumber].AntVelX = 0.1*cos(Normal(generator));
+//        Pop[antnumber].AntVelY = 0.1*sin(Normal(generator));
+        double iniangle = UniformAngle(generator);
+        Pop[antnumber].AntVelX = cos(iniangle);
+        Pop[antnumber].AntVelY = sin(iniangle);
         //  Normalize initial velocities
         double fffactor = Pop[antnumber].AntVelX*Pop[antnumber].AntVelX + Pop[antnumber].AntVelY*Pop[antnumber].AntVelY;
         Pop[antnumber].AntVelX *= NaturalVelocity/sqrt(fffactor);
         Pop[antnumber].AntVelY *= NaturalVelocity/sqrt(fffactor);
-        
+
+        //  Random initial positions
+        Pop[antnumber].AntPosX = x_2*Uniform(generator) + x_1*(1.-Uniform(generator));
+        Pop[antnumber].AntPosY = y_2*Uniform(generator) + y_1*(1.-Uniform(generator));
+
         Pop[antnumber].AntFilenamePos = "AntPos-"+to_string(antnumber+1)+".txt";
         Pop[antnumber].AntFilePos.open(Pop[antnumber].AntFilenamePos,ofstream::app);
  
@@ -599,7 +412,8 @@ int main (void){
         }
         
         
-        Pop[antnumber].AntFilePos << "#1 AntPos X" << "\t" <<  "#2 AntPos Y" << "\t" <<  "#3 Distance form nest" << "\t" << "#4 Total Distance" << "\t" << "#5 Total Y Distance" << endl;
+//        Pop[antnumber].AntFilePos << "#1 AntPos X" << "\t" <<  "#2 AntPos Y" << "\t" <<  "#3 Distance form nest" << "\t" << "#4 Total Distance" << "\t" << "#5 Total Y Distance" << endl;
+        Pop[antnumber].AntFilePos << "#1 AntPos X" << ";" <<  "#2 AntPos Y" << ";" <<  "#3 Distance form nest" << ";" << "#4 Total Distance" << ";" << "#5 Total Y Distance" << endl;
         Pop[antnumber].AntFileVel << "#1 AntVel X" << "\t" <<  "#2 AntVel Y" << "\t" <<  "#3 Speed" << "\t" << "#4 Turning Angle Rad" << "\t" << "\t" << "#5 Turning Angle Deg" << "\t" << "#6 Detected Phero Left" << "\t"<< "#7 Detected Phero Right" << "\t" << endl;
         Pop[antnumber].AntFilePhase << "#1 AntPos X" << "\t" << "#2 AntVel X" << "\t" <<  "#3 AntPos Y" << "\t" << "#4 AntVel Y" << "\t" << "#5 AntAngle" << "\t" << endl;
         
@@ -658,13 +472,13 @@ int main (void){
             }
             
             
-            Pop[antnumber].AntFilePos << Pop[antnumber].AntPosX << "\t" << Pop[antnumber].AntPosY << "\t" << sqrt(Pop[antnumber].AntPosX*Pop[antnumber].AntPosX + Pop[antnumber].AntPosY*Pop[antnumber].AntPosY) << "\t" << Pop[antnumber].AntDistance << "\t" << Pop[antnumber].AntDistanceY << endl;
+            Pop[antnumber].AntFilePos << Pop[antnumber].AntPosX << ";" << Pop[antnumber].AntPosY << ";" << sqrt(Pop[antnumber].AntPosX*Pop[antnumber].AntPosX + Pop[antnumber].AntPosY*Pop[antnumber].AntPosY) << ";" << Pop[antnumber].AntDistance << ";" << Pop[antnumber].AntDistanceY << endl;
             
-            Pop[antnumber].AntFileVel << Pop[antnumber].AntVelX << "\t" << Pop[antnumber].AntVelY << "\t" << sqrt(Pop[antnumber].AntVelX*Pop[antnumber].AntVelX + Pop[antnumber].AntVelY*Pop[antnumber].AntVelY) << "\t" << Pop[antnumber].AntTurningAngle << "\t" << Pop[antnumber].AntTurningAngle*(180./Pi) << "\t" << Pop[antnumber].AntPheroL << "\t" << Pop[antnumber].AntPheroR << endl;
+            Pop[antnumber].AntFileVel << Pop[antnumber].AntVelX << ";" << Pop[antnumber].AntVelY << ";" << sqrt(Pop[antnumber].AntVelX*Pop[antnumber].AntVelX + Pop[antnumber].AntVelY*Pop[antnumber].AntVelY) << ";" << Pop[antnumber].AntTurningAngle << ";" << Pop[antnumber].AntTurningAngle*(180./Pi) << ";" << Pop[antnumber].AntPheroL << ";" << Pop[antnumber].AntPheroR << endl;
             
-            Pop[antnumber].AntFilePhase << Pop[antnumber].AntPosX << "\t" << Pop[antnumber].AntVelX << "\t" <<  Pop[antnumber].AntPosY << "\t" << Pop[antnumber].AntVelY << "\t" << Pop[antnumber].AntAngle << "\t" << endl;
+            Pop[antnumber].AntFilePhase << Pop[antnumber].AntPosX << ";" << Pop[antnumber].AntVelX << ";" <<  Pop[antnumber].AntPosY << ";" << Pop[antnumber].AntVelY << ";" << Pop[antnumber].AntAngle << ";" << endl;
 
-            Everybody << Pop[antnumber].AntPosX << "\t" << Pop[antnumber].AntPosY << "\t" << endl;
+            Everybody << Pop[antnumber].AntPosX << ";" << Pop[antnumber].AntPosY  << endl;
 
             
             
@@ -688,7 +502,7 @@ int main (void){
         Ant::DropletNumber++;
         
 
-        AntPos << Pop[0].AntPosX << "\t" << Pop[0].AntPosY << endl;
+        AntPos << Pop[0].AntPosX << ";" << Pop[0].AntPosY << endl;
         
         cout << " Iter: " <<iter <<" / " << numiter << "\r"<< flush;//endl;
         
@@ -701,9 +515,9 @@ int main (void){
     
     // Write last position to a file.
     for (int antnumber=0; antnumber < totalantnumber; antnumber++){
-        Pop[antnumber].AntFilePosLast << Pop[antnumber].AntPosX << "\t" << Pop[antnumber].AntPosY << endl;
-        Distances <<"# Ant nr. " << antnumber+1 << " total distance."<<"\t"<<"# Ant nr. " << antnumber+1 << " total Y distance." <<endl;
-        Distances << Pop[antnumber].AntDistance << "\t" << Pop[antnumber].AntDistanceY << endl;
+        Pop[antnumber].AntFilePosLast << Pop[antnumber].AntPosX << ";" << Pop[antnumber].AntPosY << endl;
+        Distances <<"# Ant nr. " << antnumber+1 << " total distance."<<";"<<"# Ant nr. " << antnumber+1 << " total Y distance." <<endl;
+        Distances << Pop[antnumber].AntDistance << ";" << Pop[antnumber].AntDistanceY << endl;
     }
     
     PrintInfo(delta_t,data.Comm, data);
@@ -718,7 +532,7 @@ int main (void){
     Phero.open("Phero.txt");
     for(int j=1;j<=numxx;j++){
         for(int k=1;k<=numyy;k++){
-            Phero << x_1 + j*delta_x << "\t"<< y_1 + k*delta_y << "\t" << Ant::Pheromone(j,k) << endl;
+            Phero << x_1 + j*delta_x << ";"<< y_1 + k*delta_y << ";" << Ant::Pheromone(j,k) << endl;
             if(k==numyy)
                 Phero << endl;
         }
@@ -729,7 +543,7 @@ int main (void){
     PheroEffective.open("PheroEffective.txt");
     for(int j=1;j<=numxx;j++){
         for(int k=1;k<=numyy;k++){
-            PheroEffective << x_1 + j*delta_x << "\t"<< y_1 + k*delta_y << "\t" << max(Ant::Pheromone(j,k),Threshold) << endl;
+            PheroEffective << x_1 + j*delta_x << ";"<< y_1 + k*delta_y << ";" << max(Ant::Pheromone(j,k),Threshold) << endl;
             if(k==numyy)
                 PheroEffective << endl;
         }

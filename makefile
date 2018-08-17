@@ -1,8 +1,8 @@
 CC=g++
-Version=-07
+Version=-08
 OBJ=AntsIBM$(Version).o
-#CFLAGS=-Wall -g -std=c++11
-CFLAGS= -g -std=c++11
+CFLAGS=-Wall -g -std=c++11
+#CFLAGS= -g -std=c++11
 
 antsibm$(Version):$(OBJ)
 	$(CC) -o antsibm$(Version) $(OBJ) -lm

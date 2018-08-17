@@ -1,8 +1,10 @@
 reset
+cd "LastResult"
+set datafile separator ";"
 #set term qt
 set term pngcairo truecolor enhanced size 1800,1800
 set output "AAAAA.png"
-ants = 10
+ants = 5
 range = 30.
 set xrange[-range:range]
 set yrange[-range:range]
@@ -10,10 +12,12 @@ plot for [i=1:ants] "AntPhase-".i.".txt" every 5 using 1:3:(.3) w circles  lc rg
 #set term x11
 
 reset
+#cd "LastResult"
+set datafile separator ";"
 set term gif animate crop
 set output "animate.gif"
-iter = 3000
-div = 3
+iter = 2000
+div = 10
 n=iter/div #n frames
 
 range = 30.
@@ -32,3 +36,4 @@ plot "Everybody.txt" every :::(div*i)::(div*i) using 1:2 w p tit ''
 }
 set output
 set term x11
+cd ".."

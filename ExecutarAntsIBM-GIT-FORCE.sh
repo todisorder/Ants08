@@ -4,7 +4,7 @@ rm U_*;
 
 echo "Results folder name:"
 read Folder
-Version="-07"
+Version="-08"
 [ -d "$Folder" ] && rm -r "$Folder"
 mkdir "$Folder"
 cp antsibm"$Version"  "$Folder"
