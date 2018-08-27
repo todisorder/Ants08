@@ -102,7 +102,7 @@ static double const NaturalVelocity = NaturalVelocityIncmsec * t_hat_in_seconds 
 
 // tempo final
 //static double const TFINAL = 0.1;
-static double const delta_t = 0.05;   //     0.05
+static double const delta_t = 0.1;   //     0.05
 
 //  Pheromone Diffusion:
 static double const Diffusion = 0.002;      // .0002

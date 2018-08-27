@@ -366,14 +366,9 @@ void Ant::Walk(){
 
     DropletNumberToAdd ++    ;
     
-    /*
-    DropletCentersX(DropletNumber+DropletNumberToAdd,1) = AntPosX;
-    DropletCentersY(DropletNumber+DropletNumberToAdd,1) = AntPosY;
-    DropletTimes(DropletNumber+DropletNumberToAdd,1) = CurrentTime;
-    */
-       
+    
     int index = min(DropletNumber,MaxActiveDropletsPerAnt);
-    	//cout << "HERElka=" << index<< endl;
+
     if (DropletNumber <= MaxActiveDropletsPerAnt){
     	DropletCentersX(index,CurrentAntNumber) = AntPosX;
     	DropletCentersY(index,CurrentAntNumber) = AntPosY;
@@ -388,12 +383,12 @@ void Ant::Walk(){
     		DropletCentersY(ii,CurrentAntNumber) = temp;
     		temp = DropletTimes(ii+1,CurrentAntNumber);
     		DropletTimes(ii,CurrentAntNumber) = temp;
-    		//cout << "Fodeu222" << endl;
+
     	}
     	DropletCentersX(MaxActiveDropletsPerAnt,CurrentAntNumber) = AntPosX;
     	DropletCentersY(MaxActiveDropletsPerAnt,CurrentAntNumber) = AntPosY;
     	DropletTimes(MaxActiveDropletsPerAnt,CurrentAntNumber) = CurrentTime;
-    	//cout << "Fodeu222" << endl;
+
     	
     }
     

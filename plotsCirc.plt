@@ -4,7 +4,7 @@ set datafile separator ";"
 #set term qt
 set term pngcairo truecolor enhanced size 1800,1800
 set output "AAAAA.png"
-ants = 5
+ants = 10
 range = 30.
 set xrange[-range:range]
 set yrange[-range:range]

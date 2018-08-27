@@ -89,12 +89,13 @@ plt.plot(cc,'r')
 plt.show()
 
 
-x=range(5)
-for i in range(5):
+ants = 5
+x=range(ants)
+for i in range(ants):
 
     filename = 'LastResult/AntPhase-'+str(i+1)+'.txt'
     with open(filename) as f:
-        x[i] = np.loadtxt(f, delimiter=';', usecols=(0,),  unpack=True)
+        x[i] = np.loadtxt(f, delimiter=';', usecols=(3,),  unpack=True)
 
 
 #filename = 'LastResult/AntPhase-1.txt'
@@ -112,18 +113,23 @@ for i in range(5):
 
 
 
-c1 = correlation(x[0],x[0])
-plt.plot(c1,'bo')
-c2 = correlation(x[0],x[2])
-plt.plot(c2,'r')
-c3 = correlation(x[0],x[3])
-plt.plot(c3,'g')
-c4 = correlation(x[1],x[2])
-plt.plot(c4,'b')
-c5 = correlation(x[1],x[3])
-plt.plot(c5,'r')
-c6 = correlation(x[2],x[3])
-plt.plot(c6,'r')
+for i in range(ants):
+    for j in range(i+1,ants):
+        c1 = correlation(x[i],x[j])
+        plt.plot(c1,'b')
+
+
+
+#c2 = correlation(x[0],x[2])
+#plt.plot(c2,'r')
+#c3 = correlation(x[0],x[3])
+#plt.plot(c3,'g')
+#c4 = correlation(x[1],x[2])
+#plt.plot(c4,'b')
+#c5 = correlation(x[1],x[3])
+#plt.plot(c5,'r')
+#c6 = correlation(x[2],x[3])
+#plt.plot(c6,'r')
 
 
 plt.show()
