@@ -1,8 +1,0 @@
-# Ant nr. 1 total distance.;# Ant nr. 1 total Y distance.
-880.311;-231.12
-# Ant nr. 2 total distance.;# Ant nr. 2 total Y distance.
-1092.79;-9.65245
-# Ant nr. 3 total distance.;# Ant nr. 3 total Y distance.
-1091.25;-15.1283
-# Ant nr. 4 total distance.;# Ant nr. 4 total Y distance.
-862.234;223.047
