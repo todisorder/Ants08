@@ -3,10 +3,10 @@
 #############################################################
 # Method is: Deltas
 # Border behavior is: periodic
-# delta t = 0.05
+# delta t = 0.1
 # relaxation time tau (s) = 0.1
-# No. of Iterations = 2000
-# Final Time = 100
+# No. of Iterations = 5500
+# Final Time = 550
 # Comments:	
 # X points (for phero visualization only) = 100
 # Y points (for phero visualization only) = 100
@@ -16,7 +16,7 @@
 # Domain (Nondimensional)  = [-30,30] x [-30,30]
 # Domain (Cm)  = [-30,30] cm x [-30,30] cm
 ------------------------------------------------------
-Random is 7 times normal strength.
+Random is 0 times normal strength.
 ------------------------------------------------------
 Trail is: No trail given.
 ------------------------------------------------------
@@ -29,18 +29,18 @@ Lambda (if Nonlocal)                   4.1652
 Lambda (if Deltas)                     3.53553
 Diffusion                              0.002
 Evaporation                            0.01
-Droplet Amount                         0.05
+Droplet Amount                         0.1
 Droplet Amount p/ unit time            1
 Threshold                              0.7
 Max Number of active droplets/ant      10000
-Max Number of active droplets          100000
+Max Number of active droplets          40000
 Ignoring droplets farther than (X_hat) 7
 ------------------------------------------------------
-delta t (seconds) = 0.05
-Tfinal (t hat)    = 100
-Tfinal (seconds)  = 100
-Tfinal (minutos)  = 1.66667
-Tfinal (horas)    = 0.0277778
+delta t (seconds) = 0.1
+Tfinal (t hat)    = 550
+Tfinal (seconds)  = 550
+Tfinal (minutos)  = 9.16667
+Tfinal (horas)    = 0.152778
 ------------------------------------------------------
 Seed:  3536131122
  
