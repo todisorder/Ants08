@@ -14,6 +14,14 @@ using namespace std;
 
 # include "Parameters.cpp"
 
+default_random_engine generator(seed1);
+normal_distribution<double> Normal(0.,1.);          // Normal(0.,1.)
+normal_distribution<double> SmallNormal(0.,.05);      // (0.,.05)
+uniform_real_distribution<double> UniformAngle(0.,2.*Pi);      // Uniformly distributed angle
+uniform_real_distribution<double> Uniform(0.,1.);      // Uniformly distributed in [0,1]
+uniform_int_distribution<int> UniformInteger(0,10);      // Uniformly distributed integer   20
+//http://www.cplusplus.com/reference/random/normal_distribution/
+
 
 // ASCII art from http://www.kammerl.de/ascii/AsciiSignature.php
 /////////////////////////////////////////////////////////////////////////////////////////////
@@ -264,6 +272,7 @@ void PrintInfo(double delta_t, string COMM, Numerics data){
     tempfile << "#############################################################"<<endl;
     tempfile << "#############################################################"<<endl;
     tempfile << "#############################################################"<<endl;
+    tempfile << "# Number of Ants: "<< NumberOfAnts << endl;
     tempfile << "# Method is: "<< Method << endl;
     tempfile << "# Border behavior is: "<< BorderBehavior << endl;
     tempfile << "# delta t = "<< delta_t<< endl;

@@ -39,6 +39,15 @@ ax.set_xticklabels([])
 plt.show()
 
 
+data = 2 * np.random.random((10, 10))
+data2 = 3 * np.random.random((10, 10))
+Y, X = np.mgrid[-3:3:100j, -3:3:100j]
+U = -1 - X**2 + Y
+V = 1 + X - Y**2
+from matplotlib.cbook import get_sample_data
+img = np.load(get_sample_data('axes_grid/bivariate_normal.npy'))
+
+
 '''
     ======================
     3D surface (color map)
@@ -58,7 +67,7 @@ import numpy as np
 
 
 fig = plt.figure()
-ax = fig.gca(projection='3d')
+ax = fig.gca(projection='3d')   # gca = get current axes
 
 # Make data.
 X = np.arange(-5, 5, 0.25)
@@ -80,3 +89,18 @@ ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))
 fig.colorbar(surf, shrink=0.5, aspect=5)
 
 plt.show()
+
+############################################################
+
+import numpy as np
+from mpl_toolkits.mplot3d import Axes3D
+import matplotlib.pyplot as plt
+fig = plt.figure()
+
+X=[2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
+Y= [0,2500,5000,7500,10000,15000,20000,25000,30000,35000,40000,45000,50000,55000,60000,65000,70000]
+Xm, Ym = np.meshgrid(X, Y)
+Zmatrix=np.random.rand(len(Y),len(X))
+
+ax = Axes3D(plt.gcf())      # gcf = get current figure
+ax.plot_surface(Xm, Ym, Zmatrix)

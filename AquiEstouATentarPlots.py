@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
-
+from mpl_toolkits.mplot3d import Axes3D
 
 #with open('LastResult/AntPhase-1.txt') as f:
 #    a = np.loadtxt(f, delimiter=';',  usecols=(0,1,2), unpack=True)
@@ -41,6 +41,9 @@ def InnerProd(a,b):
 
 def Norm(a):
     return np.sqrt(InnerProd(a,a))
+
+def Shorten(a,n):
+    return [a[n*i] for i in range(int(len(a)/n))]
 
 
 
@@ -89,14 +92,20 @@ cc = correlation(a,b)
 #plt.show()
 
 
-ants = 3
+ants = 10
 x=list(range(ants))
 y=list(range(ants))
+
+coords = [posx, velx, posy, vely, angle] = [0,1,2,3,4]
+
+#dirname = 'LastResult'
+dirname = 'phero'
+
 for i in range(ants):
 
-    filename = 'LastResult/AntPhase-'+str(i+1)+'.txt'
+    filename = dirname+'/AntPhase-'+str(i+1)+'.txt'
     with open(filename) as f:
-        x[i],y[i] = np.loadtxt(f, delimiter=';', usecols=(0,2),  unpack=True)
+        x[i],y[i] = np.loadtxt(f, delimiter=';', usecols=(posx,posy),  unpack=True)
 #        x[i] = np.loadtxt(f, delimiter=';', usecols=0,  unpack=True)
 #        y[i] = np.loadtxt(f, delimiter=';', usecols=1,  unpack=True)
 
@@ -115,37 +124,46 @@ for i in range(ants):
 #for i in range(5):
 #    for j in range(5):
 
-counter = 0
+#CorrPortraitx = list(range(ants))
+#CorrPortraity = list(range(ants))
+#CorrPortraitx, CorrPortraity = np.meshgrid(CorrPortraitx,CorrPortraity)
+#CorrPortraitz = 0. * CorrPortraitx       # works bcause CorrPortraitx is now an array?...
+
+#floor = np.arange(ants*ants).reshape((ants,ants))
+floor = np.array([[0.]*ants]*ants)
+CorrPortraitz = np.array([[0.]*ants]*ants)
+AnotherCorrPortraitz = np.array([[0.]*ants]*ants)
+
+for i in range(len(CorrPortraitz)):
+    CorrPortraitz[i][i]=1.
+    AnotherCorrPortraitz[i][i]=1.
+
+nn = 10      # reduce size of list by nn for speed
 print(range(ants))
 for i in range(ants):
     for j in range(i+1,ants):
         print('(i,j) = (',i,',',j,')')
-        c1 = correlation(x[i],x[j])
-        c2 = correlation(y[i],y[j])
+        xi = Shorten(x[i],nn)
+        yi = Shorten(y[i],nn)
+        xj = Shorten(x[j],nn)
+        yj = Shorten(y[j],nn)
+        cx = correlation(xi,xj)
+        cy = correlation(yi,yj)
+        maxcx = max(cx)
+        maxcy = max(cy)
+        CorrPortraitz[i][j] = maxcx*maxcy
+        AnotherCorrPortraitz[i][j] = maxcy
 
-        plt.figure(counter)
-        plt.plot(c1,'b,')
-        counter = counter + 1
-        plt.figure(counter)
-        plt.plot(c2,'r.')
-        counter = counter + 1
-        plt.figure(counter)
-        plt.plot(x[i],'r.')
-        counter = counter + 1
+plt.figure(1)
+ax = plt.subplot(121)
+plt.ylabel('maxcx*maxcy')
+ax.imshow(CorrPortraitz)
+
+ax = plt.subplot(122)
+plt.ylabel('only maxcy')
+ax.imshow(AnotherCorrPortraitz)
+
 plt.show()
-
-#        plt.plot(c1,c2,'r,')
-
-#c2 = correlation(x[0],x[2])
-#plt.plot(c2,'r')
-#c3 = correlation(x[0],x[3])
-#plt.plot(c3,'g')
-#c4 = correlation(x[1],x[2])
-#plt.plot(c4,'b')
-#c5 = correlation(x[1],x[3])
-#plt.plot(c5,'r')
-#c6 = correlation(x[2],x[3])
-#plt.plot(c6,'r')
 
 
 #plt.show()

@@ -17,9 +17,9 @@ static string BorderBehavior = "periodic";   //"periodic";         // "respawn" 
 static double const numxx = 100.;
 static double const numyy = 100.;
 
-static int const NumberOfAnts = 15;
+static int const NumberOfAnts = 25;
 
-static int const MaxActiveDropletsPerAnt = 1000;    // 10000
+static int const MaxActiveDropletsPerAnt = 500;    // 10000
 
 static double const IgnoreDropletsFartherThan = 5.; // 7
 
@@ -43,7 +43,7 @@ static double const Ln2 = 0.6931471806;
 
 // obtain a seed from the system clock:
 //unsigned seed1 = std::chrono::system_clock::now().time_since_epoch().count();
-unsigned seed1 = 3536135118;                   // To use same seed as another simulation. 3536131122
+unsigned seed1 = 3536835118;                   // To use same seed as another simulation. 3536131122
 
 default_random_engine generator(seed1);
 normal_distribution<double> Normal(0.,1.);          // Normal(0.,1.)
@@ -55,7 +55,7 @@ uniform_int_distribution<int> UniformInteger(0,10);      // Uniformly distribute
 // Normal(mean,stddev)
 // Usage:
 // double number = Normal(generator);
-static double const Turn_off_random = 0.*1.;    //*0.02;
+static double const Turn_off_random = 3.*1.;    //*0.02;
 //  ^^^ 0. = No Random!
 
 //	Parameter for Regularizing Function
@@ -111,7 +111,7 @@ static double const Diffusion = 0.002;      // .0002
 static double const Evaporation = 0.01;        //0.01
 
 //  Droplet amounts
-static double const DropletAmountPerUnitTime = 1.*1.;        //0.00001
+static double const DropletAmountPerUnitTime = 0.*1.;        //0.00001
 static double const DropletAmount = DropletAmountPerUnitTime * delta_t;        //0.00001
 
 //  This is pheromone detection threshold
